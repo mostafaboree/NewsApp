@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.newsapi.data.Local.ArticleEntity
 import com.example.newsapi.data.model.Article
+import com.example.newsapi.data.model.Result
 import com.example.newsapi.data.model.Source
 import com.example.newsapi.domin.use_case.GetArticlesUseCase
 import com.example.newsapi.ui.NewsState.Error
@@ -45,6 +46,9 @@ class NewsViewModel @Inject constructor(
 
                 is NewsIntent.LoadOfflineNews -> {
 
+                }
+                is NewsIntent.LoadSources->{
+                    getSourcenews()
                 }
 
             }
@@ -125,8 +129,28 @@ class NewsViewModel @Inject constructor(
 
     }
 
+ fun getSourcenews(){
 
-}
+     viewModelScope.launch {
+         val result = getArticlesUseCase.getSources()
+         when(result){
+             is Result.Success ->{
+                 Log.d(ContentValues.TAG, "getSourcenewssucess: ${result.data}")
+                 _state.value = NewsState.SourcesLoaded(result.data)
+             }
+             is Result.Error ->{
+                 Log.d(ContentValues.TAG, "getSourcenews: ${result.message}")
+                 //_state.value = Error(result.message)
+             }
+             else ->{
+                 Log.d(ContentValues.TAG, "getSourcenews: else")
+             }
+
+
+         }
+ }
+
+}}
 
 
 /**/

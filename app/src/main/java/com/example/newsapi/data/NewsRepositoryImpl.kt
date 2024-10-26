@@ -4,8 +4,9 @@ import android.util.Log
 import com.example.newsapi.data.Local.ArticleEntity
 import com.example.newsapi.data.Local.NewsDao
 import com.example.newsapi.data.model.Article
-import com.example.newsapi.data.model.CategoriesResponse
+import com.example.newsapi.data.model.Category
 import com.example.newsapi.data.model.NewsResponse
+import com.example.newsapi.data.model.Result
 import com.example.newsapi.data.remote.NewsApiService
 import com.example.newsapi.domin.NewsRepository
 import com.example.newsapi.utls.NetworkMonitor
@@ -51,9 +52,28 @@ private var localNewsDao = listOf<ArticleEntity>()
          return newsDao.getArticles()
     }
 
+override suspend fun getSource(): Result<List<Category>> {
+    val response = apiService.getSource()
 
 
+    Log.d("NewsRepositoryImpl", "Getting sources${response.body()}")
+    return try {
+        val response = apiService.getSource()
+        if (response.isSuccessful) {
+Log.d("NewsRepositoryImpl", "Getting sources${response.body()}")
+            response.body()?.let { sourceResponse ->
+                Result.Success(sourceResponse.sources ?: emptyList())
+
+            } ?: Result.Error("No sources found", 404)
+        } else {
+
+            Result.Error("Error fetching sources", response.code())
+        }
+    } catch (e: Exception) {
+        Result.Error("Exception: ${e.message}", 500)
+    }
 }
+
 
  suspend fun List<Article>.toArticleEntityList(): List<ArticleEntity> =
     withContext(Dispatchers.Default){
@@ -74,4 +94,4 @@ suspend fun Article.toArticleEntity(): ArticleEntity = withContext(Dispatchers.D
         content = this@toArticleEntity.content
 
     )
-}
+}}

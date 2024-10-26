@@ -123,7 +123,8 @@ dependencies {
     implementation("androidx.compose.ui:ui-geometry:1.6.8")
     implementation("androidx.compose.ui:ui-graphics:1.6.8")
     //Shimmer
-    implementation("com.valentinilk.shimmer:compose-shimmer:1.0.0")
+    implementation ("com.google.accompanist:accompanist-placeholder-material:0.30.1")
+
     //
     implementation("com.google.accompanist:accompanist-webview:0.24.13-rc")
 

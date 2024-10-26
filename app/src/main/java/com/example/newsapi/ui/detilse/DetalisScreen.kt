@@ -1,53 +1,49 @@
-
+import android.content.ContentValues
 import android.content.Intent
 import android.net.Uri
 import android.util.Log
-import android.webkit.WebSettings
-import android.webkit.WebView
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Bookmark
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.OpenInBrowser
+import androidx.compose.material.icons.filled.Share
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import androidx.core.content.ContextCompat.startActivity
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.example.newsapi.data.model.Article
-import com.example.newsapi.ui.NewsViewModel
-import com.google.accompanist.web.WebView
-import com.google.accompanist.web.rememberWebViewState
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 
 @Composable
-fun DetailsScreen(article: Article, navController: NavController) {
-
+fun DetailsScreen(article: Article, navController: NavController,onClick: (String,String) -> Unit) {
     val context = LocalContext.current
-        var isExpanded by remember { mutableStateOf(false) }
+    var isExpanded by remember { mutableStateOf(false) }
 
-        if (article == null) {
-            Text(text = "Article not available", style = MaterialTheme.typography.h6, color = Color.Red)
-            return
-        }
-
-        LazyColumn(modifier = Modifier.padding(16.dp)) {
+    Box(modifier = Modifier.fillMaxSize().padding(bottom = 60.dp)) {
+        // Main content area
+        LazyColumn(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(16.dp),
+            contentPadding =PaddingValues(bottom = 26.dp)) {
             item {
                 Text(
                     text = article.title,
@@ -103,8 +99,36 @@ fun DetailsScreen(article: Article, navController: NavController) {
                     modifier = Modifier.padding(bottom = 16.dp)
                 )
             }
-            item {
-                Button(
+        }
+
+        // Floating Action Button Menu
+
+            FloatingActionMenu(article, onClick = {onClick(article.title,article.url)})
+
+    }
+}
+
+
+
+fun formatDate(dateString: String): String {
+    val zonedDateTime = ZonedDateTime.parse(dateString)
+    val formatter = DateTimeFormatter.ofPattern("MMM dd, yyyy HH:mm")
+    return zonedDateTime.format(formatter)
+}
+@Composable
+fun FloatingActionMenu(article: Article,onClick: () -> Unit ) {
+    val context = LocalContext.current
+    var isMenuExpanded by remember { mutableStateOf(false) }
+
+    Box(modifier = Modifier.fillMaxSize()) {
+        Column(
+            modifier = Modifier
+                .align(Alignment.BottomEnd)
+                .padding(16.dp),
+            horizontalAlignment = Alignment.End
+        ) {
+            if (isMenuExpanded) {
+                FloatingActionButton(
                     onClick = {
                         val shareIntent = Intent().apply {
                             action = Intent.ACTION_SEND
@@ -113,60 +137,58 @@ fun DetailsScreen(article: Article, navController: NavController) {
                         }
                         context.startActivity(Intent.createChooser(shareIntent, "Share via"))
                     },
-                    colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFF6200EE))
+                    backgroundColor = Color(0xFF6200EE),
+                    modifier = Modifier.padding(bottom = 8.dp)
                 ) {
-                    Text(text = "Share", color = Color.White)
+                    Icon(
+                        imageVector = Icons.Default.Share,
+                        contentDescription = "Share",
+                        tint = Color.White
+                    )
                 }
-            }
-            item {
-                Spacer(modifier = Modifier.height(16.dp))
-            }
-            item {
-                Button(
-                    onClick = {
-                        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(article.url))
-                        context.startActivity(intent)
-                    },
-                    colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFF03DAC5)),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = 8.dp)
-                        .height(48.dp)
+
+                // Button: Open
+                FloatingActionButton(
+                    onClick = onClick,
+                    backgroundColor = Color(0xFF03DAC5),
+                    modifier = Modifier.padding(bottom = 8.dp)
                 ) {
                     Icon(
                         imageVector = Icons.Default.OpenInBrowser,
                         contentDescription = "Open in Browser",
                         tint = Color.White
                     )
-                    Spacer(modifier = Modifier.width(8.dp))
-                    Text(text = "Open in Browser", color = Color.White)
+                }
+
+                // Button: Save
+                FloatingActionButton(
+                    onClick = {
+                        // Implement save action
+                        Log.d("FloatingActionMenu", "Save clicked")
+                    },
+                    backgroundColor = Color(0xFF4CAF50),
+                    modifier = Modifier.padding(bottom = 8.dp)
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Bookmark,
+                        contentDescription = "Save",
+                        tint = Color.White
+                    )
                 }
             }
-        }
-    }
 
-    fun formatDate(dateString: String): String {
-        val zonedDateTime = ZonedDateTime.parse(dateString)
-        val formatter = DateTimeFormatter.ofPattern("MMM dd, yyyy HH:mm")
-        return zonedDateTime.format(formatter)
-    }
-
-
-@Composable
-fun WebViewScreen(url: String, navController: NavController) {
-    //val url = article!!.url
-   // Log.d("WebViewScreen", "URL: $url")
-    val state = rememberWebViewState(url = "https://www.google.com")
-
-    WebView(
-        state = state,
-        modifier = Modifier.fillMaxSize(),
-                onCreated = { webView ->
-            webView.settings.apply {
-                javaScriptEnabled = true
-                domStorageEnabled = true
-                cacheMode = WebSettings.LOAD_DEFAULT
+            // Main Floating Action Button
+            FloatingActionButton(
+                onClick = { isMenuExpanded = !isMenuExpanded },
+                backgroundColor = if (isMenuExpanded) Color.Red else Color(0xFF6200EE)
+            ) {
+                Icon(
+                    imageVector = if (isMenuExpanded) Icons.Default.Close else Icons.Default.MoreVert,
+                    contentDescription = "Expand Menu",
+                    tint = Color.White
+                )
             }
         }
-    )
+    }
 }
+

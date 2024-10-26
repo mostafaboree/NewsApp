@@ -18,9 +18,13 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.rememberNavController
 import com.example.newsapi.data.model.Article
+import com.example.newsapi.data.model.Category
+import com.example.newsapi.ui.Composable.BottomNavBar
+import com.example.newsapi.ui.Composable.BottomTab
 import com.example.newsapi.ui.NewsIntent
 import com.example.newsapi.ui.NewsState
 import com.example.newsapi.ui.NewsViewModel
@@ -44,12 +48,26 @@ class MainActivity() : ComponentActivity() {
             var articles by remember { mutableStateOf<List<Article>>(emptyList()) }
             var selectedArticle by remember { mutableStateOf<Article?>(null) }
             var selectedCategory by remember { mutableStateOf("health") }
+            var source by remember {
+                mutableStateOf<List<Category>>(emptyList())
+            }
             viewModel.handleIntent(NewsIntent.SelectCategories(selectedCategory))
-
             NewsApiTheme {
 
+                Scaffold(modifier = Modifier.fillMaxSize().padding(top = 35.dp),
+                    bottomBar = {
+                        BottomNavBar(){
+                            when (it) {
+                                BottomTab.Home-> navController.navigate("home")
+                                BottomTab.Source-> {
+                                    viewModel.handleIntent(NewsIntent.LoadSources)
+                                    navController.navigate("source")}
+                                BottomTab.Bookmark-> navController.navigate("bookmark")
+                            }
+                        }
 
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
+                    }
+                ) { innerPadding ->
                     LaunchedEffect(viewModel) {
                         val networkMonitor = NetworkMonitor(this@MainActivity)
                         val isConnected = networkMonitor.isInternetAvailable()
@@ -79,6 +97,10 @@ class MainActivity() : ComponentActivity() {
                                 is NewsState.ArticaleDetalise -> {
                                     selectedArticle = it.article
                                 }
+                                is NewsState.SourcesLoaded -> {
+                                    source = it.categories
+                                    Log.d(ContentValues.TAG, "cata  What is the state source ${source.size}")
+                            }
                             }}}
 
 
@@ -88,6 +110,7 @@ class MainActivity() : ComponentActivity() {
                         isLoading,
                         selectedArticle,
                         selectedCategory,
+                        source,
 
                         {
                             viewModel.handleIntent(NewsIntent.NavigationToDetails(it))

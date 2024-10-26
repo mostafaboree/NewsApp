@@ -1,27 +1,19 @@
 package com.example.newsapi.ui.mainscreen
 
 import DetailsScreen
-import WebViewScreen
-import android.content.ContentValues.TAG
 import android.util.Log
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.SideEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
-import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
 import com.example.newsapi.data.model.Article
 import com.example.newsapi.data.model.Category
-import com.example.newsapi.ui.NewsIntent
-import com.example.newsapi.ui.NewsState
-import com.example.newsapi.ui.NewsViewModel
-import kotlinx.coroutines.delay
+import com.example.newsapi.ui.BookMark.BookMarkScreen
+import com.example.newsapi.ui.Composable.WebViewScr
+
+import com.example.newsapi.ui.Source.SourceScreen
+import java.net.URLEncoder
+import java.nio.charset.StandardCharsets
 
 @Composable
 fun NewsApp(
@@ -30,6 +22,7 @@ fun NewsApp(
     isLoading: Boolean,
     article: Article?,
     category: String,
+    source:List<Category>,
     selectedArticle: (article: Article) -> Unit,
     OnselectedCategory: (category: String) -> Unit,
     modifier: androidx.compose.ui.Modifier
@@ -42,7 +35,6 @@ fun NewsApp(
                 isLoading,
                 articles,
                 category,
-
                 intent = selectedArticle,
                 onClick = OnselectedCategory
             )
@@ -50,8 +42,36 @@ fun NewsApp(
         }
         composable("details") { backStackEntry ->
             //val articleUrl = backStackEntry.arguments?.getString("articleUrl") ?: ""
-            DetailsScreen(article!!, navController)
+            DetailsScreen(article!!, navController){title,url->
+                navController.navigate("webview?url=${url}&title=${title}")
+            }
         }
+        composable("source") {
+            SourceScreen(source,navController){url,title->
+                val encodedUrl = URLEncoder.encode(url, StandardCharsets.UTF_8.toString())
+                navController.navigate("webview?url=${encodedUrl}&title=${title}")
+            }
+
+        }
+        composable("bookMark") {
+            BookMarkScreen(navController,articles)
+        }
+        composable("webView?url={url}&title={title}",
+            arguments = listOf(androidx.navigation.navArgument("url") {
+                type = androidx.navigation.NavType.StringType },
+                androidx.navigation.navArgument("title") {
+                    type = androidx.navigation.NavType.StringType
+                })) { backStackEntry ->
+            val encodedUrl = backStackEntry.arguments?.getString("url") ?: ""
+            val url = java.net.URLDecoder.decode(encodedUrl, StandardCharsets.UTF_8.toString())
+            val title = backStackEntry.arguments?.getString("title") ?: ""
+            WebViewScr(navController, url,title){
+                navController.popBackStack()
+            }
+Log.d("TAG", "NewsApp: $url")
+
+        }
+
 
     }
 }

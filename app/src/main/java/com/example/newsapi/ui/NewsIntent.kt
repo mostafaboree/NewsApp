@@ -14,6 +14,7 @@ sealed class NewsOfflineState {
 
 sealed class NewsIntent() {
     object LoadOfflineNews : NewsIntent()
+    object LoadSources : NewsIntent()
     data class SelectCategories(val category: String) : NewsIntent()
     object idel : NewsIntent()
     data class NavigationToDetails(val article: Article) : NewsIntent()
@@ -24,6 +25,7 @@ sealed class NewsState() {
     object Loading : NewsState()
     data class ArticlesLoaded(val articles: List<Article>) : NewsState()
     data class ArticaleDetalise(val article: Article) : NewsState()
+    data class SourcesLoaded(val categories: List<Category>) : NewsState()
     data class Error(val message: String) : NewsState()
 
 
