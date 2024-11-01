@@ -30,7 +30,8 @@ fun BottomNavBar(onItemClick: (BottomTab) -> Unit) {
 
     BottomNavigation(
         backgroundColor = Color.White,
-        contentColor = Color.Black
+        contentColor = Color.Black,
+
     ) {
         val items = listOf("Home", "Source", "Bookmark")
         val icons = listOf(Icons.Filled.Home, Icons.Filled.Source, Icons.Filled.Bookmark)
@@ -45,7 +46,6 @@ fun BottomNavBar(onItemClick: (BottomTab) -> Unit) {
                     Icon(
                         imageVector = icons[index],
                         contentDescription = item,
-                        tint = animatedColor.value
                     )
                 },
                 label = { Text(item) },
@@ -54,6 +54,8 @@ fun BottomNavBar(onItemClick: (BottomTab) -> Unit) {
                     selectedIndex = index
                     onItemClick(if (index == 0) BottomTab.Home else if (index == 1) BottomTab.Source else BottomTab.Bookmark)
                 },
+                selectedContentColor = Color(0xFF00695C),
+                unselectedContentColor = Color.Gray,
                 modifier = Modifier.padding(4.dp)
             )
         }

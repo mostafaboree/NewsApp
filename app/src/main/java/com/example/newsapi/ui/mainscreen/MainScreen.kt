@@ -69,6 +69,7 @@ import coil.compose.AsyncImagePainter
 import coil.compose.rememberAsyncImagePainter
 import com.example.booksshoe.presentation.ListScreen.LoadingAppScreen
 import com.example.booksshoe.presentation.ListScreen.LoadingScreen
+import com.example.booksshoe.presentation.ListScreen.ShimmerloadingAnimation
 import com.example.newsapi.R
 import com.example.newsapi.data.model.Article
 import com.example.newsapi.ui.NewsIntent
@@ -97,9 +98,8 @@ fun HomeScreen(
 
 
 ) {
-    val onArticleClick = { article: Article ->}
 
-    val trendingArticles=articles
+    val trendingArticles = articles
 
     Column(modifier = Modifier.fillMaxSize()) {
         // Top Headline Section
@@ -117,12 +117,9 @@ fun HomeScreen(
         if (articles.isNotEmpty()) {
             AnimatedBreakingNewsPager(
                 articles = articles,
-                onArticleClick = onArticleClick
+                onArticleClick = intent
             )
         }
-
-
-
 
 
         // Category Tabs
@@ -151,14 +148,15 @@ fun HomeScreen(
                         .padding(horizontal = 12.dp)
                 ) {
                     items(articles) { article ->
-                        NewsItem(article, onClick = { onArticleClick(article) })
+                        NewsItem(article, onClick = { intent(article) })
                     }
                 }
             } else {
                 LoadingScreen()
             }
-        }}
+        }
     }
+}
 //
 
 @Composable
@@ -168,7 +166,7 @@ fun BreakingNewsItem(article: Article, onClick: (article: Article) -> Unit) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 4.dp)
+            .padding(start = 16.dp)
             .clickable { onClick(article) }
             .shadow(12.dp, RoundedCornerShape(16.dp)),
         shape = RoundedCornerShape(16.dp),
@@ -248,19 +246,24 @@ fun NewsItem(article: Article, onClick: (article: Article) -> Unit) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 12.dp, vertical = 8.dp)
+            .height(170.dp)
+            .padding(horizontal = 4.dp, vertical = 4.dp)
             .clickable { onClick(article) }
             .shadow(8.dp, RoundedCornerShape(16.dp)),
         shape = RoundedCornerShape(16.dp),
         elevation = CardDefaults.cardElevation(4.dp),
         colors = CardDefaults.cardColors(containerColor = Color(0xFFF9F9F9))
     ) {
-        Column {
+        Row {
             Box(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .height(180.dp)
-                    .clip(RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp))
+                    .fillMaxWidth(.5f)
+                    .padding(5.dp)
+                    .height(150.dp)
+                    .clip(
+                        RoundedCornerShape(25.dp)
+                    ),
+                contentAlignment = Alignment.Center
             ) {
                 Image(
                     painter = painter,
@@ -304,16 +307,17 @@ fun NewsItem(article: Article, onClick: (article: Article) -> Unit) {
                 Text(
                     text = article.description,
                     style = MaterialTheme.typography.bodyMedium.copy(fontSize = 14.sp),
-                    maxLines = 3,
+                    maxLines = 2,
                     overflow = TextOverflow.Ellipsis
                 )
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(
                     text = "Published: ${article.publishedAt}", // Assuming `publishedAt` is available
                     style = MaterialTheme.typography.labelSmall.copy(
-                        color = Color.Gray,
-                        fontSize = 12.sp
-                    )
+                        color = Color.Black,
+                        fontSize = 8.sp
+                    ), modifier = Modifier.background(color = Color(0xFF00695C).copy(alpha = 0.2f),
+                        shape = RoundedCornerShape(12.dp)).padding(4.dp)
                 )
             }
         }
@@ -348,6 +352,7 @@ fun CategoryItem(
         )
     }
 }
+
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun AnimatedBreakingNewsPager(
@@ -356,7 +361,7 @@ fun AnimatedBreakingNewsPager(
 ) {
     val pagerState = rememberPagerState(
         initialPage = 0
-    ){
+    ) {
         articles.size
     }
 
@@ -368,83 +373,30 @@ fun AnimatedBreakingNewsPager(
             pagerState.animateScrollToPage(nextPage)
         }
     }
-Column {
+    Column {
 
 
-    Box(modifier = Modifier) {
-        // Horizontal Pager with animations
-        HorizontalPager(
-            state = pagerState,
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(300.dp) // Adjust pager height
-                .padding(vertical = 4.dp)
-        ) { page ->
-            // Enhanced breaking news item with animation
-            BreakingNewsItem(
-                article = articles[page],
-                onClick = { onArticleClick(articles[page]) }
-            )
-        }}
+        Box(modifier = Modifier) {
+            // Horizontal Pager with animations
+            HorizontalPager(
+                state = pagerState,
+                contentPadding = PaddingValues(end = 64.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(300.dp) // Adjust pager height
+                    .padding(vertical = 4.dp)
+            ) { page ->
+                // Enhanced breaking news item with animation
+                BreakingNewsItem(
+                    article = articles[page],
+                    onClick = { onArticleClick(articles[page]) }
+                )
+            }
+        }
 
         // Page Indicator Dots
-        DotsIndicator(
-            totalDots = articles.size,
-            selectedIndex = pagerState.currentPage,
-            modifier = Modifier
-                .align(Alignment.CenterHorizontally)
-                .padding(vertical = 4.dp, horizontal = 16.dp)
-        )
 
-}}
 
-@Composable
-fun DotsIndicator(
-    totalDots: Int,
-    selectedIndex: Int,
-    modifier: Modifier = Modifier,
-    dotSize: Int = 8,
-    selectedDotSize: Int = 10,
-    dotSpacing: Int = 8,
-    activeColor: Color = Color.Blue,
-    inactiveColor: Color = Color.Gray
-) {
-    Row(
-        modifier = modifier,
-        horizontalArrangement = Arrangement.spacedBy(dotSpacing.dp),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        repeat(totalDots) { index ->
-            val size by animateFloatAsState(
-                targetValue = if (index == selectedIndex) selectedDotSize.toFloat() else dotSize.toFloat(),
-                animationSpec = tween(durationMillis = 300)
-            )
-
-            Box(
-                modifier = Modifier
-                    .size(size.dp)
-                    .clip(CircleShape)
-                    .background(
-                        if (index == selectedIndex) activeColor else inactiveColor
-                    )
-            )
-        }
     }
-}
-
-
-
-
-
-@Composable
-fun ScrollIndicator(isSelected: Boolean) {
-    Box(
-        Modifier
-            .height(2.dp)
-            .background(if (isSelected) Color.Blue else Color.Transparent)
-            .fillMaxWidth()
-    )
-
-
 }
 

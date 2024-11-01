@@ -169,13 +169,8 @@ fun ExpandableCategorySection(
 
 @Composable
 fun CategoryHeader(title: String,category: String) {
-    val gradientColors = when (category) {
-        "technology" -> listOf(Color(0xFF1E88E5), Color(0xFF42A5F5)) // Blue tones
-        "sports" -> listOf(Color(0xFF43A047), Color(0xFF66BB6A)) // Green tones
-        "general" -> listOf(Color(0xFF6D4C41), Color(0xFF8D6E63)) // Brown tones
-        "entertainment" -> listOf(Color(0xFF8E24AA), Color(0xFFAB47BC)) // Purple tones
-        else -> listOf(Color(0xFFB00020), Color(0xFF6200EE)) // Default red-purple
-    }
+    val gradientColors = listOf(Color.Gray, Color(0xFF00695C)) // Green tones
+
 
     Text(
         text = title.uppercase(),
@@ -245,13 +240,9 @@ fun NewsSourceItem(newsSource: Category, onItemClick: () -> Unit) {
 
 @Composable
 fun DynamicLogo(text: String, category: String) {
-    val gradientColors = when (category) {
-        "technology" -> listOf(Color(0xFF1E88E5), Color(0xFF42A5F5)) // Blue tones
-        "sports" -> listOf(Color(0xFF43A047), Color(0xFF66BB6A)) // Green tones
-        "general" -> listOf(Color(0xFF6D4C41), Color(0xFF8D6E63)) // Brown tones
-        "entertainment" -> listOf(Color(0xFF8E24AA), Color(0xFFAB47BC)) // Purple tones
-        else -> listOf(Color(0xFFB00020), Color(0xFF6200EE)) // Default red-purple
-    }
+    val gradientColors = listOf(Color(0xFF999999), Color(0xFF00695C)) // Blue tones
+
+
 
     Text(
         text = text,

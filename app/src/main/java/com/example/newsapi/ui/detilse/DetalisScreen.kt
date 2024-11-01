@@ -56,8 +56,8 @@ fun DetailsScreen(article: Article, navController: NavController,onClick: (Strin
                 Text(
                     text = "By ${article.author} | ${formatDate(article.publishedAt)}",
                     style = MaterialTheme.typography.subtitle2,
-                    color = Color.Gray,
-                    modifier = Modifier.padding(bottom = 16.dp)
+                    color = Color.Black,
+                    modifier = Modifier.padding(bottom = 16.dp).background(Color(0xFF00695C).copy(alpha = 0.2f), shape = RoundedCornerShape(8.dp)).padding(8.dp)
                 )
             }
             item {
@@ -95,8 +95,8 @@ fun DetailsScreen(article: Article, navController: NavController,onClick: (Strin
                 Text(
                     text = "Source: ${article.source.name}",
                     style = MaterialTheme.typography.caption,
-                    color = Color.Gray,
-                    modifier = Modifier.padding(bottom = 16.dp)
+                    color = Color.Black,
+                    modifier = Modifier.padding(bottom = 16.dp).background(Color(0xFF00695C).copy(alpha = 0.2f), shape = RoundedCornerShape(8.dp)).padding(8.dp)
                 )
             }
         }
@@ -137,7 +137,7 @@ fun FloatingActionMenu(article: Article,onClick: () -> Unit ) {
                         }
                         context.startActivity(Intent.createChooser(shareIntent, "Share via"))
                     },
-                    backgroundColor = Color(0xFF6200EE),
+                    backgroundColor = Color(0xFF00695C),
                     modifier = Modifier.padding(bottom = 8.dp)
                 ) {
                     Icon(
@@ -180,7 +180,7 @@ fun FloatingActionMenu(article: Article,onClick: () -> Unit ) {
             // Main Floating Action Button
             FloatingActionButton(
                 onClick = { isMenuExpanded = !isMenuExpanded },
-                backgroundColor = if (isMenuExpanded) Color.Red else Color(0xFF6200EE)
+                backgroundColor = if (isMenuExpanded) Color.Red else Color(0xFF00695C)
             ) {
                 Icon(
                     imageVector = if (isMenuExpanded) Icons.Default.Close else Icons.Default.MoreVert,
