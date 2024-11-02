@@ -16,8 +16,13 @@ The app is built using **Jetpack Compose** and adheres to **MVI architecture** p
 * **User Interface:** Smooth animations for a delightful user experience.
 
 ## Screenshots
-<img src="your_image_p![WhatsApp Image 2024-11-02 at 7 46 28 PM (4)](https://github.com/user-attachments/assets/67734bdb-7437-4672-b01a-dcda24bac341)
-ath" width="200" height="200" alt="Your Image Description">
+<img src="https://github.com/user-attachments/assets/67734bdb-7437-4672-b01a-dcda24bac341ath" width="200" height="200" alt="Your Image Description">
+<div align="center">
+  <img src="![WhatsApp Image](https://github.com/user-attachments/assets/3e5348f0-7aba-42d6-8d3f-c6f37049303c)
+" width="200" height="200" alt="Image 1">
+  <img src="image2.png" width="200" height="200" alt="Image 2">
+  <img src="image3.png" width="200" height="200" alt="Image 3">
+</div>
 
 
 **Here are some examples of what the app looks like:**
