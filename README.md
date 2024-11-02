@@ -6,24 +6,24 @@ The app is built using **Jetpack Compose** and adheres to **MVI architecture** p
 
 ## Features
 
-* **Breaking News & Regular News:** Separate sections for trending breaking news and regular articles.
-* **Category Selector:** Scrollable list to filter news by category.
-* **Animated News Carousel:** Breaking news items are displayed in an auto-scrolling horizontal pager.
-* **Expandable Article View:** Users can expand news content for more details.
-* **Floating Action Menu:** Quick access to share, save, and open articles in the browser.
-* **Offline Support:** Saved articles can be accessed offline using Room database.
-* **Content Sharing:** Users can share articles with others via various platforms.
-* **User Interface:** Smooth animations for category transitions, breaking news auto-scroll, and more.
+* **Breaking News & Regular News:** Stay up-to-date with the latest headlines and in-depth articles.
+* **Category Selector:** Filter news by category to find what interests you most.
+* **Animated News Carousel:** Catch the latest breaking news at a glance with the auto-scrolling carousel.
+* **Expandable Article View:** Dive deeper into articles with the easy-to-use expansion feature.
+* **Floating Action Menu:** Share, save, and open articles in the browser with just a tap.
+* **Offline Support:** Never miss a beat, even without an internet connection. Access saved articles offline.
+* **Content Sharing:** Share interesting articles with your friends and family on various platforms.
+* **User Interface:** Smooth animations for a delightful user experience.
 
 ## Screenshots
 
-[Insert screenshots here, e.g., breaking news, categories, and article details.]
-![WhatsApp Image 2024-11-02 at 7 46 28 PM (3)](https://github.com/user-attachments/assets/8db9b248-4fbd-4218-a92f-ec6c8ab30ca8)
-![WhatsApp Image 2024-11-02 at 7 46 28 PM (4)](https://github.com/user-attachments/assets/0b5a5959-9adb-4fa6-827d-2083a8899ec5)
-![WhatsApp Image 2024-11-02 at 7 46 28 PM (5)](https://github.com/user-attachments/assets/2168c734-101e-415f-a19c-f923a6744214)
-![WhatsApp Image 2024-11-02 at 7 46 28 PM](https://github.com/user-attachments/assets/240ab43b-e8e4-4977-a43d-b19558564ca1)
-![WhatsApp Image 2024-11-02 at 7 46 28 PM (1)](https://github.com/user-attachments/assets/97319d6c-57d8-464b-868c-e35a485c11a5)
-![WhatsApp Image 2024-11-02 at 7 46 28 PM (2)](https://github.com/user-attachments/assets/406ac254-4d2c-4dba-ae6c-8197648d6921)
+**Here are some examples of what the app looks like:**
+
+* **Breaking News Carousel** (replace with image description)
+* **Category Selection** (replace with image description)
+* **Article Details** (replace with image description)
+
+**[Download the app now!](link to app store or website - optional)**
 
 ## Technologies Used
 
