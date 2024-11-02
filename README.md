@@ -17,7 +17,7 @@ The app is built using **Jetpack Compose** and adheres to **MVI architecture** p
 
 ## Screenshots
 <div align="center">
-(https://github.com/user-attachments/assets/7873ebb0-3b70-4c8e-bcb4-c672cef6d1c9)
+<img src="https://github.com/user-attachments/assets/7873ebb0-3b70-4c8e-bcb4-c672cef6d1c9" width="200" height="200" alt="Image 1">
 ![WhatsApp Image 2024-11-02 at 7 46 28 PM (4)](https://github.com/user-attachments/assets/2e3da1f1-191a-495e-a5cd-bf19da370ce3)
 ![WhatsApp Image 2024-11-02 at 7 46 28 PM (5)](https://github.com/user-attachments/assets/aa10d3fa-12e1-4a5b-88ee-a6c70532b58d)
 ![WhatsApp Image 2024-11-02 at 7 46 28 PM](https://github.com/user-attachments/assets/c778b61c-aa72-4f02-bd73-79807c179d49)
