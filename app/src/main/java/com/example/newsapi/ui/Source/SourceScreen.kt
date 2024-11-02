@@ -8,6 +8,7 @@ import android.webkit.WebSettings
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -44,9 +45,12 @@ import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Computer
 import androidx.compose.material.icons.filled.ExpandLess
 import androidx.compose.material.icons.filled.ExpandMore
+import androidx.compose.material.icons.filled.Public
 import androidx.compose.material.icons.filled.Refresh
+import androidx.compose.material.icons.filled.Sports
 import androidx.compose.material.icons.filled.Web
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.runtime.Composable
@@ -58,6 +62,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
@@ -126,32 +131,31 @@ fun SourceScreen(
 }
 
 @Composable
-fun ExpandableCategorySection(
-    title: String,
-    items: List<Category>,
-    initiallyExpanded: Boolean = true,
-    onItemClick: (String, String) -> Unit
-) {
-    var expanded by remember { mutableStateOf(initiallyExpanded) }
+fun ExpandableCategorySection(title: String, items: List<Category>, onItemClick: (String, String) -> Unit) {
+    var expanded by remember { mutableStateOf(false) }
+    val rotationAngle by animateFloatAsState(targetValue = if (expanded) 180f else 0f)
 
-    Column {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .clickable { expanded = !expanded }
-                .padding(8.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Text(
-                text = title,
-                style = MaterialTheme.typography.h6.copy(fontWeight = FontWeight.Bold),
-                modifier = Modifier.weight(1f)
-            )
-            Icon(
-                imageVector = if (expanded) Icons.Default.ExpandLess else Icons.Default.ExpandMore,
-                contentDescription = null
-            )
-        }
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable { expanded = !expanded }
+            .padding(8.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(
+            text = title,
+            style = MaterialTheme.typography.h6.copy(fontWeight = FontWeight.Bold),
+            modifier = Modifier.weight(1f)
+        )
+        Icon(
+            imageVector = Icons.Default.ExpandMore,
+            contentDescription = null,
+            modifier = Modifier.rotate(rotationAngle)
+        )
+    }
+    // The rest of ExpandableCategorySection...
+
+
         AnimatedVisibility(visible = expanded) {
             LazyRow(
                 contentPadding = PaddingValues(horizontal = 8.dp),
@@ -164,18 +168,14 @@ fun ExpandableCategorySection(
                 }
             }
         }
-    }
+
 }
 
 @Composable
-fun CategoryHeader(title: String,category: String) {
-    val gradientColors = listOf(Color.Gray, Color(0xFF00695C)) // Green tones
+fun CategoryHeader(title: String, category: String) {
+    val gradientColors = listOf(Color.Gray, Color(0xFF00695C))
 
-
-    Text(
-        text = title.uppercase(),
-        style = MaterialTheme.typography.h6.copy(fontWeight = FontWeight.Bold),
-        color = Color.White,
+    Row(
         modifier = Modifier
             .padding(8.dp)
             .background(
@@ -183,26 +183,61 @@ fun CategoryHeader(title: String,category: String) {
                 shape = RoundedCornerShape(16.dp)
             )
             .padding(8.dp)
-            .fillMaxWidth()
-    )
+            .fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        CategoryIconPlaceholder(category) // Use icon-based placeholder here
+        Spacer(modifier = Modifier.width(8.dp))
+        Text(
+            text = title.uppercase(),
+            style = MaterialTheme.typography.h6.copy(fontWeight = FontWeight.Bold),
+            color = Color.White
+        )
+    }
 }
+@Composable
+fun CategoryIconPlaceholder(category: String) {
+    val icon = when (category.lowercase()) {
+        "technology" -> Icons.Default.Computer // Example icon for tech
+        "sports" -> Icons.Default.Sports // Example icon for sports
+        else -> Icons.Default.Public // Default for general news
+    }
+
+    Box(
+        contentAlignment = Alignment.Center,
+        modifier = Modifier
+            .size(60.dp)
+            .clip(RoundedCornerShape(8.dp))
+            .background(Color.LightGray)
+    ) {
+        Icon(imageVector = icon, contentDescription = category, tint = Color.DarkGray)
+    }
+}
+
+
 
 @Composable
 fun NewsSourceItem(newsSource: Category, onItemClick: () -> Unit) {
+    var isPressed by remember { mutableStateOf(false) }
+
     Card(
         modifier = Modifier
-            .width(180.dp) // Fixed width to make it consistent in LazyRow
+            .width(180.dp)
             .padding(8.dp)
-            .clickable { onItemClick() },
-        elevation = 4.dp,
+            .clickable {
+                isPressed = !isPressed
+                onItemClick()
+            }
+            .background(if (isPressed) Color.LightGray else Color.White),
+        elevation = if (isPressed) 8.dp else 4.dp,
         shape = RoundedCornerShape(12.dp),
         backgroundColor = Color(0xFFF9F9F9)
     ) {
         Column(
             modifier = Modifier.padding(12.dp),
-            horizontalAlignment = Alignment.Start
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            // Load image using Coil or any other image loading library
+            // Replace with DynamicLogo or icon-based placeholder
             DynamicLogo(text = newsSource.name, category = newsSource.category)
 
             Spacer(modifier = Modifier.height(8.dp))
@@ -224,13 +259,11 @@ fun NewsSourceItem(newsSource: Category, onItemClick: () -> Unit) {
             )
             Spacer(modifier = Modifier.height(8.dp))
 
-            Row {
-                Text(
-                    text = "Language: ${newsSource.language.uppercase()}",
-                    style = MaterialTheme.typography.caption,
-                    color = Color.DarkGray
-                )
-            }
+            Text(
+                text = "Language: ${newsSource.language.uppercase()}",
+                style = MaterialTheme.typography.caption,
+                color = Color.DarkGray
+            )
         }
     }
 }
@@ -238,34 +271,29 @@ fun NewsSourceItem(newsSource: Category, onItemClick: () -> Unit) {
 
 
 
+
+val colorPalette = listOf(Color(0xFF2196F3), Color(0xFFFFC107), Color(0xFF4CAF50), Color(0xFFF44336))
+
 @Composable
 fun DynamicLogo(text: String, category: String) {
-    val gradientColors = listOf(Color(0xFF999999), Color(0xFF00695C)) // Blue tones
+    val gradientColors = listOf(Color(0xFF2196F3), Color(0xFF64B5F6)) // Customizable for variety
 
-
-
-    Text(
-        text = text,
-        fontSize = 20.sp,
-        fontWeight = FontWeight.Bold,
-        color = Color.White,
-        textAlign = TextAlign.Center,
-        style = TextStyle(
-            shadow = Shadow(
-                color = Color.Black.copy(alpha = 0.5f),
-                offset = Offset(4f, 4f),
-                blurRadius = 8f
-            )
-        ),
-        modifier = Modifier
-            .background(
-                Brush.linearGradient(colors = gradientColors),
-                shape = RoundedCornerShape(16.dp)
-            )
-            .padding(16.dp)
-            .fillMaxWidth()
-    )
+    Box(
+        contentAlignment = Alignment.Center,
+        modifier = Modifier.fillMaxWidth().height(50.dp)
+            .clip(RoundedCornerShape(20.dp))
+            .background(Brush.linearGradient(gradientColors))
+    ) {
+        Text(
+            text = text.take(3).uppercase(), // Take first two letters as initials
+            fontSize = 20.sp,
+            fontWeight = FontWeight.Bold,
+            color = Color.White,
+            textAlign = TextAlign.Center
+        )
+    }
 }
+
 @Composable
 fun CategorySelector(categories: List<String>, onCategorySelected: (String) -> Unit) {
     var selectedCategory by remember { mutableStateOf("") }
