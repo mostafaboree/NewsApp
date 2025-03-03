@@ -1,10 +1,10 @@
-# NewsAPI Android App
+#🚀 NewsAPI Android App
 
 **This Android application displays categorized news articles, dynamically fetched from an API.**
 
 The app is built using **Jetpack Compose** and adheres to **MVI architecture** principles. **Offline support** is enabled through **Room** for saved news articles, and the app includes **sharing options**, **content expansion**, and **smooth UI transitions**.
 
-## Features
+## ✔️ Features
 
 * **Breaking News & Regular News:** Stay up-to-date with the latest headlines and in-depth articles.
 * **Category Selector:** Filter news by category to find what interests you most.
